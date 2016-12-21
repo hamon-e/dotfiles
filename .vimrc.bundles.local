@@ -1,0 +1,5 @@
+Bundle 'TagHighlight'
+Bundle 'jez/vim-superman'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'airblade/vim-rooter'
+Bundle 'Konfekt/FastFold'

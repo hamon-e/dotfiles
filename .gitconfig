@@ -1,0 +1,16 @@
+[user]
+	name = Benoit Hamon
+	email = benoit.hamon@epitech.eu
+[mergetool "fugitive"]
+	cmd = vim -f -c \"Gdiff\" \"$MERGED\"
+[merge]
+	tool = fugitive
+[mergetool]
+	keepBackup = false
+[core]
+	editor = vim
+	excludesfile = /home/hamon_e/.gitignore_global
+[help]
+	autocorrect = 1
+[color]
+	ui = auto

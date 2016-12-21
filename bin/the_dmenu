@@ -1,0 +1,16 @@
+#!/bin/sh
+
+IFS=:
+
+hist=$(cat /home/hamon_e/.dmenu | sort -nr | cut -d ' ' -f 2)
+echo $hist
+cmd=$((echo $hist ; stest -flx $PATH | grep -v $hist) | dmenu "$@")
+if [ ! -z "$cmd" ] ; then
+  echo "$cmd" | sh &
+  count=$(($(grep $cmd /home/hamon_e/.dmenu | cut -d ' ' -f 1) + 1))
+  if [ $count -eq 1 ] ; then
+    echo "1 $cmd" >> /home/hamon_e/.dmenu
+  else
+    sed -i "s/^[0-9]\+ $cmd/$count\ $cmd/" /home/hamon_e/.dmenu
+  fi
+fi

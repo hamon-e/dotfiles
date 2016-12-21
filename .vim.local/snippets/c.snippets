@@ -1,0 +1,293 @@
+priority -50
+
+snippet inc
+#include <${1:stdio}.h>
+endsnippet
+
+snippet Inc
+#include "${1:`vim_snippets#Filename("$1.h")`}"
+endsnippet
+
+snippet def "#define ..."
+#define ${1}
+endsnippet
+
+snippet ifndef "#ifndef ... #define ... #endif"
+#ifndef ${1/([A-Za-z0-9_]+).*/$1/}
+# define ${1:SYMBOL} ${2:value}
+#endif /* ifndef $1 */
+endsnippet
+
+snippet ifdef
+#ifdef ${1:FOO}
+${2:#define }
+#endif
+endsnippet
+
+snippet #if "#if #endif" b
+#if ${1:0}
+${VISUAL}${0}
+#endif
+endsnippet
+
+snippet main
+int		main(int argc, char const *argv[])
+{
+  ${0}
+  return (0);
+}
+endsnippet
+
+snippet mainn
+int		main(void)
+{
+  ${0}
+  return (0);
+}
+endsnippet
+
+#
+## Control Statements
+# if
+snippet if
+	if (${1:true}) {
+		${0}
+	}
+endsnippet
+snippet ife
+	if (${1:true}) {
+		${2}
+	} else {
+		${0}
+	}
+endsnippet
+# else
+snippet el
+	else {
+		${0}
+	}
+endsnippet
+# else if
+snippet elif
+	else if (${1:true}) {
+		${0}
+	}
+endsnippet
+# ifi
+snippet ifi
+	if (${1:true}) ${0};
+endsnippet
+# ternary
+snippet t
+	${1:/* condition */} ? ${2:a} : ${3:b}
+endsnippet
+# switch
+snippet switch
+	switch (${1:/* variable */}) {
+		case ${2:/* variable case */}:
+			${3}
+			${4:break;}${5}
+		default:
+			${6}
+	}
+endsnippet
+# switch without default
+snippet switchndef
+	switch (${1:/* variable */}) {
+		case ${2:/* variable case */}:
+			${3}
+			${4:break;}${5}
+	}
+endsnippet
+# case
+snippet case
+	case ${1:/* variable case */}:
+		${2}
+		${3:break;}
+snippet ret
+	return ${0};
+endsnippet
+##
+## Loops
+# for
+snippet for
+	for (${2:i} = 0; $2 < ${1:count}; $2${3:++}) {
+		${4}
+	}
+endsnippet
+# for (custom)
+snippet forr
+	for (${1:i} = ${2:0}; ${3:$1 < 10}; $1${4:++}) {
+		${5}
+	}
+endsnippet
+# while
+snippet wh
+	while (${1:/* condition */}) {
+		${2}
+	}
+endsnippet
+# do... while
+snippet do
+	do {
+		${2}
+	} while (${1:/* condition */});
+endsnippet
+snippet for "for loop (for)"
+for (${2:i} = 0; $2 < ${1:count}; ${3:++$2}) {
+	${VISUAL}${0}
+}
+endsnippet
+
+snippet fori "for int loop (fori)"
+for (${4:int} ${2:i} = 0; $2 < ${1:count}; ${3:++$2}) {
+	${VISUAL}${0}
+}
+endsnippet
+
+snippet once
+#ifndef ${1:`toupper(vim_snippets#Filename('$1_H_', 'UNTITLED_H_'))`}
+# define $1
+
+${VISUAL}${0}
+
+#endif /* end of include guard: $1 */
+endsnippet
+
+snippet fprintf "fprintf ..."
+fprintf(${1:stderr}, "${2:%s}\n"${2/([^%]|%%)*(%.)?.*/(?2:, :\);)/}$3${2/([^%]|%%)*(%.)?.*/(?2:\);)/}
+endsnippet
+
+snippet eli "else if .. (eli)"
+else if (${1:/* condition */}) {
+	${VISUAL}${0}
+}
+endsnippet
+
+snippet printf "printf .. (printf)"
+printf("${1:%s}\n"${1/([^%]|%%)*(%.)?.*/(?2:, :\);)/}$2${1/([^%]|%%)*(%.)?.*/(?2:\);)/}
+endsnippet
+
+snippet st "struct"
+struct ${1:`!p snip.rv = "t_" + (snip.basename or "name")`}
+{
+  ${0:/* data */}
+};
+endsnippet
+
+snippet fun "function" b
+${1:void} ${2:function_name}(${3})
+{
+	${VISUAL}${0}
+}
+endsnippet
+
+snippet fund "function declaration" b
+${1:void} ${2:function_name}(${3});
+endsnippet
+
+##
+## Functions
+# function definition
+snippet fun
+	${1:void} ${2:function_name}(${3})
+	{
+		${4}
+	}
+endsnippet
+# function declaration
+snippet fund
+	${1:void} ${2:function_name}(${3});
+endsnippet
+##
+## Types
+# typedef
+snippet td
+	typedef ${1:int} ${2:MyCustomType};
+endsnippet
+# struct
+snippet st
+	struct ${1:`vim_snippets#Filename('$1_t', 'name')`} {
+		${2:/* data */}
+	}${3: /* optional variable list */};
+endsnippet
+# typedef struct
+snippet tds
+	typedef struct ${2:_$1 }{
+		${3:/* data */}
+	} ${1:`vim_snippets#Filename('$1_t', 'name')`};
+
+snippet enum
+	enum ${1:name} { ${0} };
+endsnippet
+# typedef enum
+snippet tde
+	typedef enum {
+		${1:/* data */}
+	} ${2:foo};
+endsnippet
+##
+snippet getopt
+	int choice;
+	while (1)
+	{
+		static struct option long_options[] =
+		{
+			/* Use flags like so:
+			{"verbose",	no_argument,	&verbose_flag, 'V'}*/
+			/* Argument styles: no_argument, required_argument, optional_argument */
+			{"version", no_argument,	0,	'v'},
+			{"help",	no_argument,	0,	'h'},
+			${1}
+			{0,0,0,0}
+		};
+
+		int option_index = 0;
+
+		/* Argument parameters:
+			no_argument: " "
+			required_argument: ":"
+			optional_argument: "::" */
+
+		choice = getopt_long( argc, argv, "vh",
+					long_options, &option_index);
+
+		if (choice == -1)
+			break;
+
+		switch( choice )
+		{
+			case 'v':
+				${2}
+				break;
+
+			case 'h':
+				${3}
+				break;
+
+			case '?':
+				/* getopt_long will have already printed an error */
+				break;
+
+			default:
+				/* Not sure how to get here... */
+				return EXIT_FAILURE;
+		}
+	}
+
+	/* Deal with non-option arguments here */
+	if ( optind < argc )
+	{
+		while ( optind < argc )
+		{
+			${0}
+		}
+	}
+##
+## Miscellaneous
+# This is kind of convenient
+endsnippet
+snippet .
+	[${1}]
+endsnippet
+# vim:ft=snippets:

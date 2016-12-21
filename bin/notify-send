@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# notify - display notifications in lemonbar
+#
+
+(echo "%{c}$@"; sleep 3) | lemonbar -g 1920x24+0+0 -d -B '#333232' -F '#a7a5a5' -f "Ubuntu Mono:10" &
+if xrandr | grep "DP2 connected"; then
+(echo "%{c}$@"; sleep 3) | lemonbar -g 1920x24+1920+0 -d -B '#333232' -F '#a7a5a5' -f "Ubuntu Mono:10" &
+fi

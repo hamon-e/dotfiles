@@ -1,0 +1,55 @@
+#! /bin/sh
+
+PANEL_FONT="fontawesome:10"
+PANEL_FONT2="Ubuntu Mono:10"
+PANEL_HEIGHT="20"
+
+if xdo id -a "$PANEL_WM_NAME" > /dev/null ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
+bspc subscribe report > "$PANEL_FIFO" &
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+clock -sf 'C%a %H:%M' > "$PANEL_FIFO" &
+while true ; do
+  echo "S$(amixer -M sget Master | grep "\[on\]" | cut -d ' ' -f 6 | sed -s 's/\[\(.*\)%\]/\1/')" > "$PANEL_FIFO"
+  if cmus-remote ; then
+    tmp=`cmus-remote -Q`
+    title=`cmus-remote -Q | grep "tag title" | sed -s 's/.*title //'`
+    echo $tmp | grep playing && status=1 || status=0
+    echo "M$status$title" > "$PANEL_FIFO"
+  else
+    echo "M2" > "$PANEL_FIFO"
+  fi
+  sleep .2
+done &
+while true ; do
+  ping -c 1 google.fr && echo "I1" > "$PANEL_FIFO" || echo "I0" > "$PANEL_FIFO"
+  echo "B$(cat /sys/class/power_supply/BAT0/status) $(cat /sys/class/power_supply/BAT0/capacity)" > "$PANEL_FIFO"
+  sleep 2
+done &
+
+. panel_colors
+
+if xrandr | grep "DP2 connected"; then
+panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT+1920 -f "$PANEL_FONT" -f "$PANEL_FONT2" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" | sh &
+else
+panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_FONT2" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" | sh &
+fi
+
+wid=$(xdo id -a "$PANEL_WM_NAME")
+tries_left=20
+while [ -z "$wid" -a "$tries_left" -gt 0 ] ; do
+	sleep 0.05
+	wid=$(xdo id -a "$PANEL_WM_NAME")
+	tries_left=$((tries_left - 1))
+done
+[ -n "$wid" ] && xdo above -t "$(xdo id -N Bspwm -n root | sort | head -n 1)" "$wid"
+
+wait

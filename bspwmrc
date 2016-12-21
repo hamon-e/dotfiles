@@ -1,0 +1,48 @@
+#! /bin/sh
+
+sxhkd &
+
+bspc monitor -d 1 2 3 4 5 6 7 8 9 0
+
+bspc config border_width         2
+bspc config window_gap           5
+bspc config -d 1 window_gap 0
+bspc config pointer_follows_focus true
+
+bspc config split_ratio          0.5
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+bspc config single_monocle       true
+
+pkill dunst
+if xrandr | grep "DP2 connected"; then
+xrandr --output eDP1 --auto --left-of DP2
+randr --output DP2 --auto --primary
+bspc monitor eDP1 -n 0 -d 6 7 8 9 0
+bspc monitor DP2 -n 1 -d 1 2 3 4 5
+dunst -mon 1 &
+else
+dunst -mon 0 &
+fi
+
+bspc config focus_follows_pointer true
+bspc config external_rules_command ~/conf/bin/external_rules
+
+panel &
+xrdb /home/hamon_e/.Xressources
+
+autocutsel -s CLIPBOARD -fork
+autocutsel -s PRIMARY -fork
+
+setxkbmap -option caps:escape
+
+feh --bg-center /home/hamon_e/conf/bg-cat.jpg
+
+compton -b
+redshift -l 48.8566:2.3522 &
+conky &
+
+google-chrome-stable &
+slack &
+geary &
+cmus. &

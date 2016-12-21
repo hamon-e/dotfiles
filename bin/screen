@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+
+xrandr --output eDP1 --auto --left-of DP2
+xrandr --output DP2 --auto --primary
+bspc monitor eDP1 -n 0 -d 1 2 3 4 5
+bspc monitor DP2 -n 1 -d 6 7 8 9 0

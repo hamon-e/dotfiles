@@ -1,0 +1,16 @@
+/*
+** $FILE for $PROJ in $PATH
+** 
+** Made by $NAME
+** Login   <$NICK@epitech.net>
+** 
+** Started on  $DATE $NAME
+** Last update $DATE $NAME
+*/
+
+#ifndef $PN_$FN_H_
+# define $PN_$FN_H_
+
+
+
+#endif /* end of include guard: $PN_$FN_H_ */

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case $1 in
+	up)
+	echo $((`cat /sys/class/backlight/intel_backlight/actual_brightness` + $2)) | sudo tee /sys/class/backlight/intel_backlight/brightness > /dev/null
+	;;
+	down)
+	echo $((`cat /sys/class/backlight/intel_backlight/actual_brightness` - $2)) | sudo tee /sys/class/backlight/intel_backlight/brightness > /dev/null
+	;;
+esac
